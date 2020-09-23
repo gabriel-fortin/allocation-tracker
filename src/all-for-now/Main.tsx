@@ -29,20 +29,23 @@ const Content: React.FC = () => (
 const Header: React.FC<BoxProps> = (boxProps) => {
 
     return (
-        <Flex
-            {...boxProps}
-        >
-            <Text
-                // padding={2}
-            >
+        <Flex {...boxProps}>
+            <Text>
                 people
             </Text>
-
         </Flex>
     );
 };
 
 const Body: React.FC<BoxProps> = (boxProps) => {
+    return (
+        <Box {...boxProps}>
+            <DataTable />
+        </Box>
+    );
+};
+
+const DataTable: React.FC<BoxProps> = () => {
     // some pseudo-data to work on the UI
     const byProject = new Array(9)
         .fill('X')
@@ -50,72 +53,80 @@ const Body: React.FC<BoxProps> = (boxProps) => {
             projectName: `project ${i}`,
             byDay: new Array(71)
                 .fill('?')
-                .map((y, j) => `${'a' + j}`)
+                .map((y, j) => `${j*67}`)
         }));
 
 
     // props for both left and right area
     const areaProps: GridProps = {
-        autoRows: "2em", // row height
+        autoRows: "2em", // fixed row height
         rowGap: "1px",
     };
 
     // props for only the left area
     const projectAreaProps: GridProps = {
         ...areaProps,
-        gridColumn: "1",
     };
 
     // props for only the right area
     const dataAreaProps: GridProps = {
         ...areaProps,
-        gridColumn: "2",
-        templateColumns: "5px", // first column
-        autoColumns: "3em", // all following columns
         columnGap: "1px",
         overflowX: "scroll",
+        // alignItems: "stretch",
+        // justifyItems: "stretch",
     };
 
     return (
-        <Grid
-            {...boxProps}
-            templateColumns="minmax(15%, 7em) [data] 1fr"
-            columnGap="1px"
+        <Grid  // TODO: replace this usage of Grid with Flex
+            templateColumns="minmax(15%, 7em) 1fr"
         >
 
             {/*  projects' area  */}
             <Grid {...projectAreaProps}>
-                {byProject.map((project, i) => (
-                    <Box backgroundColor="green.500">
-                        {project.projectName}
-                    </Box>
-                ))}
+                {byProject.map(projectData =>
+                    <ProjectCell data={projectData} />
+                )}
             </Grid>
 
             {/*  assignments' area  */}
             <Grid {...dataAreaProps}>
-                {byProject.map((project, i) => (<>
-                    <Box
-                        gridRow={i}
-                        bg="pink.400"
-                    >
-                    </Box>
-                    {project.byDay.map((day, j) =>
+                {byProject.map((project, i) => (
+                    <React.Fragment key={i}>
+                        {/* decoration */}
                         <Box
                             gridRow={i}
-                            backgroundColor="purple.100"
-                        >
-                            <Cell data={day} />
-                        </Box>
-                    )}
-                </>))}
+                            width="4px"
+                            backgroundColor="pink.400"
+                        />
+                        {project.byDay.map((day, j) =>
+                            <DataCell data={day} gridRow={i} key={j} />
+                        )}
+                    </React.Fragment>
+                ))}
             </Grid>
 
         </Grid>
     );
 };
 
-const Cell: React.FC<{data:any}> = ({ data }) => {
+const ProjectCell: React.FC<{data:any} & BoxProps> = ({data, ...boxProps}) => {
+    return (
+        <Box {...boxProps}
+            backgroundColor="green.500"
+        >
+            {data.projectName}
+        </Box>
+    );
+};
+
+const DataCell: React.FC<{data:any} & BoxProps> = ({ data, ...boxProps }) => {
     // data will contain a list of people with values between 0 and 1
-    return <>{data}</>;
+    return (
+        <Box {...boxProps}
+            backgroundColor="purple.100"
+        >
+            {data}
+        </Box>
+    );
 };
