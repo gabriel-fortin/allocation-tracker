@@ -1,6 +1,10 @@
 import React from "react";
 import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Grid, Box, GridProps } from "@chakra-ui/core";
 
+import { useData, Days, Persons, Projects } from "./hooks";
+import { Day, Person, Project } from "../Model";
+
+
 export const Main: React.FC = () => {
     return (
         <ThemeProvider>
@@ -47,14 +51,7 @@ const Body: React.FC<BoxProps> = (boxProps) => {
 
 const DataTable: React.FC<BoxProps> = () => {
     // some pseudo-data to work on the UI
-    const byProject = new Array(9)
-        .fill('X')
-        .map((x, i) => ({
-            projectName: `project ${i}`,
-            byDay: new Array(71)
-                .fill('?')
-                .map((y, j) => `${j*67}`)
-        }));
+    const { projects } = useData();
 
 
     // props for both left and right area
@@ -84,14 +81,14 @@ const DataTable: React.FC<BoxProps> = () => {
 
             {/*  projects' area  */}
             <Grid {...projectAreaProps}>
-                {byProject.map(projectData =>
-                    <ProjectCell data={projectData} />
+                {projects.map(project =>
+                    <ProjectCell {...project} />
                 )}
             </Grid>
 
             {/*  assignments' area  */}
             <Grid {...dataAreaProps}>
-                {byProject.map((project, i) => (
+                {projects.map((project, i) => (
                     <React.Fragment key={i}>
                         {/* decoration */}
                         <Box
@@ -99,8 +96,8 @@ const DataTable: React.FC<BoxProps> = () => {
                             width="4px"
                             backgroundColor="pink.400"
                         />
-                        {project.byDay.map((day, j) =>
-                            <DataCell data={day} gridRow={i} key={j} />
+                        {project.days.map((day, j) =>
+                            <DataCell {...day} gridRow={i} key={j} />
                         )}
                     </React.Fragment>
                 ))}
@@ -110,23 +107,23 @@ const DataTable: React.FC<BoxProps> = () => {
     );
 };
 
-const ProjectCell: React.FC<{data:any} & BoxProps> = ({data, ...boxProps}) => {
+const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
     return (
         <Box {...boxProps}
             backgroundColor="green.500"
         >
-            {data.projectName}
+            {name}
         </Box>
     );
 };
 
-const DataCell: React.FC<{data:any} & BoxProps> = ({ data, ...boxProps }) => {
+const DataCell: React.FC<Persons & BoxProps> = ({ persons, ...boxProps }) => {
     // data will contain a list of people with values between 0 and 1
     return (
         <Box {...boxProps}
             backgroundColor="purple.100"
         >
-            {data}
+            {persons[0].firstName}
         </Box>
     );
 };
