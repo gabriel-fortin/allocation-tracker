@@ -1,8 +1,9 @@
 import React from "react";
-import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Grid, Box, GridProps } from "@chakra-ui/core";
+import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Grid, Box, GridProps, Avatar, Stack, AvatarGroup, AspectRatioBox, Badge } from "@chakra-ui/core";
 
 import { useData, Days, Persons, Projects } from "./hooks";
 import { Day, Person, Project } from "../Model";
+
 
 
 export const Main: React.FC = () => {
@@ -53,11 +54,11 @@ const DataTable: React.FC<BoxProps> = () => {
     // some pseudo-data to work on the UI
     const { projects } = useData();
 
-
     // props for both left and right area
     const areaProps: GridProps = {
-        autoRows: "2em", // fixed row height
+        autoRows: "2.3em", // fixed row height
         rowGap: "1px",
+        alignItems: "center",
     };
 
     // props for only the left area
@@ -70,8 +71,12 @@ const DataTable: React.FC<BoxProps> = () => {
         ...areaProps,
         columnGap: "1px",
         overflowX: "scroll",
-        // alignItems: "stretch",
-        // justifyItems: "stretch",
+    };
+
+    const borders: BoxProps = {
+        borderRightWidth: 1,
+        borderRightStyle: "solid",
+        borderRightColor: "gray.300",
     };
 
     return (
@@ -82,24 +87,16 @@ const DataTable: React.FC<BoxProps> = () => {
             {/*  projects' area  */}
             <Grid {...projectAreaProps}>
                 {projects.map(project =>
-                    <ProjectCell {...project} />
+                    <ProjectCell {...project} {...borders} borderRightWidth={2} />
                 )}
             </Grid>
 
             {/*  assignments' area  */}
             <Grid {...dataAreaProps}>
                 {projects.map((project, i) => (
-                    <React.Fragment key={i}>
-                        {/* decoration */}
-                        <Box
-                            gridRow={i}
-                            width="4px"
-                            backgroundColor="pink.400"
-                        />
-                        {project.days.map((day, j) =>
-                            <DataCell {...day} gridRow={i} key={j} />
-                        )}
-                    </React.Fragment>
+                    project.days.map((day, j) =>
+                        <DataCell {...day} gridRow={i} key={`${i}_${j}`} {...borders}/>
+                    )
                 ))}
             </Grid>
 
@@ -110,7 +107,6 @@ const DataTable: React.FC<BoxProps> = () => {
 const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
     return (
         <Box {...boxProps}
-            backgroundColor="green.500"
         >
             {name}
         </Box>
@@ -120,10 +116,25 @@ const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
 const DataCell: React.FC<Persons & BoxProps> = ({ persons, ...boxProps }) => {
     // data will contain a list of people with values between 0 and 1
     return (
-        <Box {...boxProps}
-            backgroundColor="purple.100"
+        <Stack {...boxProps}
+            fontSize="0.8em"
+            isInline
+            paddingX={2}
+            /**/borderColor="blue.100"  // so it can be inherited by <div>
         >
-            {persons[0].firstName}
-        </Box>
+            {persons.map(person => (
+                <div style={{
+                    width: "1.5em",
+                    height: "1.6em",
+                    margin: "0 1px",
+                    border: "1px solid",
+                    borderColor: "inherit",
+                    textAlign: "center",
+                    borderRadius: "50%",
+                }}>
+                    {person.initial}
+                </div>
+            ))}
+        </Stack>
     );
 };

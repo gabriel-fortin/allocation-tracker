@@ -25,7 +25,11 @@ export const useData: () => Projects<Days<Persons>> =
                     .fill('?')
                     .map((_y, j) => ({
                         date: new Date(),
-                        persons: [{ firstName: `${j * 67}` }],
+                        persons: [
+                            { firstName: `Shane`, initial: "S" },
+                            { firstName: `Kosta`, initial: "K" },
+                            { firstName: `Neill`, initial: "N" },
+                        ],
                     }))
             }))
     });
