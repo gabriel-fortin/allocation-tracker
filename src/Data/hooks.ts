@@ -1,4 +1,4 @@
-import { Project, Day, Person } from "../Model";
+import { Project, Day, Person, Value } from "Model";
 
 
 // types for nesting thingies
@@ -13,9 +13,6 @@ export interface Persons<T={}> {
     persons: (Person & T)[];
 }
 
-export class Value {
-    value!: number;
-}
 
 
 // mock data

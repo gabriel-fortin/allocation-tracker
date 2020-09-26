@@ -1,57 +1,11 @@
 import React from "react";
-import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Grid, Box, GridProps, Avatar, Stack, AvatarGroup, AspectRatioBox, Badge } from "@chakra-ui/core";
+import { Text, BoxProps, Grid, Box, GridProps, Stack } from "@chakra-ui/core";
 
-import { useData, Days, Persons, Projects, Value } from "./hooks";
-import { Day, Person, Project } from "../Model";
+import { useData, Days, Persons, Projects } from "Data";
+import { Day, Person, Project, Value } from "Model";
 
 
-
-export const Main: React.FC = () => {
-    return (
-        <ThemeProvider>
-            <CSSReset />
-            <Content />
-        </ThemeProvider>
-    );
-};
-
-const Content: React.FC = () => (
-    <Flex
-        flexDirection="column"
-    >
-        <Header
-            padding={6}
-        />
-        <Divider
-            margin={0}
-        />
-        <Body
-            padding={6}
-        />
-    </Flex>
-);
-
-const Header: React.FC<BoxProps> = (boxProps) => {
-
-    return (
-        <Flex {...boxProps}>
-            <Text>
-                people
-            </Text>
-        </Flex>
-    );
-};
-
-const Body: React.FC<BoxProps> = (boxProps) => {
-    return (
-        <Box {...boxProps}>
-            <DataTable />
-        </Box>
-    );
-};
-
-const DataTable: React.FC<BoxProps> = () => {
-    // some pseudo-data to work on the UI
+export const DataTable: React.FC<BoxProps> = () => {
     const { projects } = useData();
 
     // props for both left and right area
