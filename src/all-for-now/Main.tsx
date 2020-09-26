@@ -1,7 +1,7 @@
 import React from "react";
 import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Grid, Box, GridProps, Avatar, Stack, AvatarGroup, AspectRatioBox, Badge } from "@chakra-ui/core";
 
-import { useData, Days, Persons, Projects } from "./hooks";
+import { useData, Days, Persons, Projects, Value } from "./hooks";
 import { Day, Person, Project } from "../Model";
 
 
@@ -56,8 +56,8 @@ const DataTable: React.FC<BoxProps> = () => {
 
     // props for both left and right area
     const areaProps: GridProps = {
-        autoRows: "2.3em", // fixed row height
-        rowGap: "1px",
+        autoRows: "1.8em", // fixed row height
+        rowGap: "7px",
         alignItems: "center",
     };
 
@@ -113,28 +113,68 @@ const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
     );
 };
 
-const DataCell: React.FC<Persons & BoxProps> = ({ persons, ...boxProps }) => {
+const DataCell: React.FC<Persons<Value> & BoxProps> = ({ persons, ...boxProps }) => {
     // data will contain a list of people with values between 0 and 1
+
+    const bgColorFor: (i: number) => string = (i) => [
+        "teal.600", "yellow.400", "blue.300", "red.700", "purple.300",
+        "pink.700", "gray.600"
+    ][i];
+
     return (
         <Stack {...boxProps}
-            fontSize="0.8em"
             isInline
-            paddingX={2}
-            /**/borderColor="blue.100"  // so it can be inherited by <div>
+            height="100%"
+            // a 'Box' overrides right margin to 0.5rem
+            // so we compensate with other margins/paddings
+            paddingLeft={4}
+            paddingRight={2}
+            fontSize="0.8em"
+            fontWeight="bold"
         >
-            {persons.map(person => (
-                <div style={{
-                    width: "1.5em",
-                    height: "1.6em",
-                    margin: "0 1px",
-                    border: "1px solid",
-                    borderColor: "inherit",
-                    textAlign: "center",
-                    borderRadius: "50%",
-                }}>
-                    {person.initial}
-                </div>
-            ))}
+            {persons.map((person, i) => {
+                const border = (person.value===1)
+                    && `solid 3px ${bgColorFor(i)}`
+                    || `0`;
+                return (
+                    <Box
+                        width="1.1em"
+                        height="1.65em"
+                        textAlign="center"
+                        // a 'Box' overrides right margin to 0.5rem
+                        // so we compensate with other margins/paddings
+                        marginLeft={-2}
+                        // borderTop={border}
+                        // borderBottom={border}
+
+                        borderTop="solid 3px"
+                        borderBottom="solid 3px"
+                        borderColor={person.value && bgColorFor(i) || "lightgray"}
+                        borderRadius="20%"
+                        opacity={person.value*0.9 + 0.1}
+                    >
+                        <Text>
+                            {person.initial}
+                        </Text>
+                    </Box>
+                    // <Box
+                    //     alignSelf={i%2==0 && "flex-end" || "flex-start"}
+                    //     width="1.3em"
+                    //     height="1.3em"
+                    //     textAlign="center"
+                    //     // margin="0 -3px"
+                    //     // a 'Box' overrides right margin to 0.5rem
+                    //     // so we compensate with other margins/paddings
+                    //     marginLeft={-4}
+                    //     border="1px solid"
+                    //     borderColor={person.value && "teal.600" || "lightgrey"}
+                    //     borderRadius="50%"
+                    //     opacity={person.value*0.9 + 0.1}
+                    // >
+                    //     <Text>{person.initial}</Text>
+                    // </Box>
+                );
+            })}
         </Stack>
     );
 };
