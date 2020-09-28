@@ -1,12 +1,12 @@
 import React from "react";
 import { Text, BoxProps, Grid, Box, GridProps, Stack } from "@chakra-ui/core";
 
-import { useData, Days, Persons, Projects } from "Data";
+import { useDataTableData, Days, Persons, Projects } from "Data";
 import { Day, Person, Project, Value } from "Model";
 
 
-export const DataTable: React.FC<BoxProps> = () => {
-    const { projects } = useData();
+export const DataTable: React.FC = () => {
+    const { projects } = useDataTableData();
 
     // props for both left and right area
     const areaProps: GridProps = {

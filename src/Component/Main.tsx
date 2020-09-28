@@ -2,13 +2,16 @@ import React from "react";
 import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Box } from "@chakra-ui/core";
 
 import { DataTable } from "Component";
+import { AppStoreProvider } from "AppStore";
 
 
 export const Main: React.FC = () => {
     return (
         <ThemeProvider>
             <CSSReset />
-            <Content />
+            <AppStoreProvider>
+                <Content />
+            </AppStoreProvider>
         </ThemeProvider>
     );
 };

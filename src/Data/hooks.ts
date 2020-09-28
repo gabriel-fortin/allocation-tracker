@@ -1,4 +1,5 @@
 import { Project, Day, Person, Value } from "Model";
+import { AppStore, useAppStore } from "AppStore";
 
 
 // types for nesting thingies
@@ -16,8 +17,13 @@ export interface Persons<T={}> {
 
 
 // mock data
-export const useData: () => Projects<Days<Persons<Value>>> =
-    () => ({
+export const useDataTableData: () => Projects<Days<Persons<Value>>> = () => {
+    const theAppStore: AppStore = useAppStore();
+
+    // TODO: transform data from theAppStore into the required output structure
+
+    // for now, just some mock data
+    return ({
         projects: new Array(9)
             .fill('X')
             .map((_x, i) => ({
@@ -37,4 +43,5 @@ export const useData: () => Projects<Days<Persons<Value>>> =
                         ],
                     }))
             }))
-    });
+    })
+};
