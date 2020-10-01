@@ -1,7 +1,7 @@
 import React from "react";
-import { CSSReset, ThemeProvider, Flex, Divider, Text, BoxProps, Box } from "@chakra-ui/core";
+import { CSSReset, ThemeProvider, Flex, Divider, BoxProps, Box } from "@chakra-ui/core";
 
-import { DataTable } from "Component";
+import { DataTable, PeopleArea } from "Component";
 import { AppStoreProvider } from "AppStore";
 
 
@@ -36,9 +36,7 @@ const Header: React.FC<BoxProps> = (boxProps) => {
 
     return (
         <Flex {...boxProps}>
-            <Text>
-                people
-            </Text>
+            <PeopleArea />
         </Flex>
     );
 };
@@ -50,4 +48,3 @@ const Body: React.FC<BoxProps> = (boxProps) => {
         </Box>
     );
 };
-
