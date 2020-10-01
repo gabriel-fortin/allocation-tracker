@@ -28,7 +28,7 @@ export const useDataTableData: () => Projects<Days<Persons<Value>>> = () => {
             .fill('X')
             .map((_x, i) => ({
                 name: `project ${i}`,
-                days: new Array(71)
+                days: new Array(3)
                     .fill('?')
                     .map((_y, j) => ({
                         date: new Date(),

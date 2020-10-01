@@ -1,5 +1,6 @@
 import { Id } from "Model";
 
+
 export class Person {
     id?: Id;
     firstName: string;

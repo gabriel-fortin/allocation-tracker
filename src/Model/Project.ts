@@ -1,4 +1,8 @@
+import { Id } from "Model";
+
+
 export class Project {
+    // id?: Id;
     name: string;
 
     constructor(name: string) {

@@ -1,8 +1,9 @@
 import React from "react";
 import { Text, BoxProps, Grid, Box, GridProps, Stack } from "@chakra-ui/core";
 
-import { useDataTableData, Days, Persons, Projects } from "Data";
 import { Day, Person, Project, Value } from "Model";
+
+import { useDataTableData, Days, Persons, Projects } from "./useDataTableData";
 
 
 export const DataTable: React.FC = () => {
@@ -92,6 +93,7 @@ const DataCell: React.FC<Persons<Value> & BoxProps> = ({ persons, ...boxProps })
                     || `0`;
                 return (
                     <Box
+                        key={i}
                         width="1.1em"
                         height="1.65em"
                         textAlign="center"
