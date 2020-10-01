@@ -1,19 +1,10 @@
 import React, { useState, useMemo, useContext } from "react";
 
 import { Person, Project, Record } from "Model";
-import { AppStore } from "AppStore";
+import { AppStore, dummyAppStore } from "./AppStore";
 
 
-const emptyAppStore: AppStore = {
-    getRecords: () => [],
-    getPersons: () => [],
-    getProjects: () => [],
-    addPerson: (x) => {},
-    addProject: (x) => {},
-    addRecord: (x) => {},
-};
-
-const AppStoreContext = React.createContext<AppStore>(emptyAppStore);
+const AppStoreContext = React.createContext<AppStore>(dummyAppStore);
 
 export const useAppStore: () => AppStore =
     () => useContext(AppStoreContext);
@@ -24,12 +15,13 @@ export const AppStoreProvider: React.FC = ({ children }) => {
     const [records, setRecords] = useState<Record[]>([]);
 
     const appStore: AppStore = useMemo(() => ({
-        getPersons: () => persons,
-        getProjects: () => projects,
-        getRecords: () => records,
+        persons,
+        projects,
+        records,
         addPerson: (newPerson) => setPersons(currentPersons => [newPerson, ...currentPersons]),
         addProject: (newProject) => setProjects(currentProjects => [newProject, ...currentProjects]),
         addRecord: (newRecord) => setRecords(currentRecords => [newRecord, ...currentRecords]),
+        isLoading: false,
     }), [persons, projects, records]);
 
     return (

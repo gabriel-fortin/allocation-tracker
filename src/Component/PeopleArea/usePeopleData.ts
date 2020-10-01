@@ -9,9 +9,8 @@ export const usePeopleData: () => {
 } = () => {
     const appStore = useAppStore();
     return {
-        persons: appStore.getPersons(),
+        persons: appStore.persons,
         addPerson: (firstName) => { appStore.addPerson(new Person(firstName, firstName[0])) },
-        // addPerson: (firstName) => { alert(`usePeopleData -> addPerson: ${firstName}`) },
         removePerson: (personId) => { console.error(`Removing persons is not implemented`) },
     };
 };
