@@ -1,6 +1,8 @@
 import React, { useState, useMemo, useContext, useEffect } from "react";
 
 import { Person, Project, Record } from "Model";
+import { Persister } from "PersistentStore";
+
 import { AppStore, dummyAppStore } from "./AppStore";
 
 
@@ -16,14 +18,7 @@ export const AppStoreProvider: React.FC = ({ children }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     // TODO: persister should be a dependency, injected through props
-    const persister: {
-        retrievePersons: () => Person[],
-        // TODO: retrieveProjects: () => Project[],
-        // TODO: retrieveRecords: () => Record[],
-        storePersons: (persons: Person[]) => void,
-        // TODO: storeProjects
-        // TODO: storeRecords
-    } = {
+    const persister: Persister = {
         retrievePersons: () => {
             const retrievedPersons = window.localStorage.getItem("persons");
             if (retrievedPersons === null) return [];
