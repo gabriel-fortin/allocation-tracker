@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { CSSReset, ThemeProvider, Flex, Divider, BoxProps, Box, Modal, ModalOverlay, Spinner } from "@chakra-ui/core";
 
 import { DataTable, PeopleArea } from "Component";
 import { AppStoreProvider, useAppStore } from "AppStore";
+import { LocalStoragePersister } from "PersistentStore";
 
 
 export const Main: React.FC = () => {
+    const [persister] = useState(new LocalStoragePersister());
+
     return (
         <ThemeProvider>
             <CSSReset />
-            <AppStoreProvider>
+            <AppStoreProvider persister={persister}>
                 <LoadingIndicator />
                 <Content />
             </AppStoreProvider>
@@ -34,7 +37,6 @@ const Content: React.FC = () => (
 );
 
 const Header: React.FC<BoxProps> = (boxProps) => {
-
     return (
         <Flex {...boxProps}>
             <PeopleArea />

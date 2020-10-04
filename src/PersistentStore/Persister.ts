@@ -1,5 +1,6 @@
 import { Person } from "Model"
 
+
 export interface Persister {
     retrievePersons: () => Promise<Person[]>;
     // TODO: retrieveProjects: () => Project[],
