@@ -26,42 +26,41 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
     useEffect(() => {
         Promise.all([
             persister.retrievePersons(),
-        ]).then(([persons]) => {
+            persister.retrieveProjects(),
+            persister.retrieveRecords(),
+        ]).then(([persons, projects, records]) => {
             setPersons(persons);
-            // TODO: setProjects(...)
-            // TODO: setRecords(...)
+            setProjects(projects);
+            setRecords(records);
             setIsLoading(false);
         }).catch((reason) => {
             console.error(`Initial load of data failed. Reason:`, reason);
         });
-
-        // TODO: load projects and records as well
-
     }, []);
 
-    const appStore: AppStore = useMemo(() => ({
-        persons,
-        projects,
-        records,
-        isLoading,
-        addPerson: (newPerson) => {
-            const newPersonsCollection = [newPerson, ...persons];
-            setPersons(newPersonsCollection)
-            persister.storePersons(newPersonsCollection);
-        },
-        addProject: (newProject) => {
-            setProjects(currentProjects => [newProject, ...currentProjects]);
-
-            // TODO: persist projects
-
-        },
-        addRecord: (newRecord) => {
-            setRecords(currentRecords => [newRecord, ...currentRecords]);
-
-            // TODO: persist records
-
-        },
-    }), [persons, projects, records, isLoading, persister]);
+    const appStore: AppStore = useMemo(
+        () => ({
+            persons,
+            projects,
+            records,
+            isLoading,
+            addPerson: (newPerson) => {
+                const updatedPersons = [newPerson, ...persons];
+                setPersons(updatedPersons)
+                persister.storePersons(updatedPersons);
+            },
+            addProject: (newProject) => {
+                const updatedProjects = [newProject, ...projects];
+                setProjects(updatedProjects);
+                persister.storeProjects(updatedProjects);
+            },
+            addRecord: (newRecord) => {
+                const updatedRecords = [newRecord, ...records];
+                setRecords(updatedRecords);
+                persister.storeRecords(updatedRecords);
+            },
+        }),
+        [persons, projects, records, isLoading, persister]);
 
     return (
         <AppStoreContext.Provider value={appStore}>
