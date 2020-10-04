@@ -1,21 +1,47 @@
-import { Person } from "Model";
+import { Person, Project, Record } from "Model";
 import { Persister } from "PersistentStore";
 
 
+const PERSONS = "persons";
+const PROJECTS = "projects";
+const RECORDS = "records";
+
 export class LocalStoragePersister implements Persister {
-    retrievePersons: () => Promise<Person[]> =
-        () => {
-            const retrievedPersons = window.localStorage.getItem("persons");
-            if (retrievedPersons === null) return Promise.resolve([]);
+    retrievePersons(): Promise<Person[]> {
+        const retrievedPersons = window.localStorage.getItem(PERSONS);
+        if (retrievedPersons === null) return Promise.resolve([]);
 
-            return RandomlyDelayedPromise.resolve(JSON.parse(retrievedPersons));
-        }
+        return RandomlyDelayedPromise.resolve(JSON.parse(retrievedPersons));
+    }
 
-    storePersons: (persons: Person[]) => Promise<void> =
-        (persons) => {
-            window.localStorage.setItem("persons", JSON.stringify(persons));
-            return RandomlyDelayedPromise.resolve();
-        }
+    retrieveProjects(): Promise<Project[]> {
+        const retrievedProjects = window.localStorage.getItem(PROJECTS);
+        if (retrievedProjects === null) return Promise.resolve([]);
+
+        return RandomlyDelayedPromise.resolve(JSON.parse(retrievedProjects));
+    }
+
+    retrieveRecords(): Promise<Record[]> {
+        const retrievedRecords = window.localStorage.getItem(RECORDS);
+        if (retrievedRecords === null) return Promise.resolve([]);
+
+        return RandomlyDelayedPromise.resolve(JSON.parse(retrievedRecords));
+    }
+
+    storePersons(persons: Person[]): Promise<void> {
+        window.localStorage.setItem(PERSONS, JSON.stringify(persons));
+        return RandomlyDelayedPromise.resolve();
+    }
+
+    storeProjects(projects: Project[]): Promise<void> {
+        window.localStorage.setItem(PROJECTS, JSON.stringify(projects));
+        return RandomlyDelayedPromise.resolve();
+    }
+
+    storeRecords(records: Record[]): Promise<void> {
+        window.localStorage.setItem(RECORDS, JSON.stringify(records));
+        return RandomlyDelayedPromise.resolve();
+    }
 }
 
 /**
