@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { CSSReset, ThemeProvider, Flex, Divider, BoxProps, Box, Modal, ModalOverlay, Spinner, ModalContent } from "@chakra-ui/core";
 
-import { DataTable, PeopleArea } from "Component";
+import { DataTable, PeopleArea, RecordAdder } from "Component";
 import { AppStoreProvider, useAppStore } from "AppStore";
 import { LocalStoragePersister } from "PersistentStore";
 
@@ -39,6 +39,12 @@ const Content: React.FC = () => (
 const Header: React.FC<BoxProps> = (boxProps) => {
     return (
         <Flex {...boxProps}>
+            <RecordAdder />
+            <Divider
+                orientation="vertical"
+                marginX={4}
+                marginY={-2}
+            />
             <PeopleArea />
         </Flex>
     );
