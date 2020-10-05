@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CSSReset, ThemeProvider, Flex, Divider, BoxProps, Box, Modal, ModalOverlay, Spinner } from "@chakra-ui/core";
+import { CSSReset, ThemeProvider, Flex, Divider, BoxProps, Box, Modal, ModalOverlay, Spinner, ModalContent } from "@chakra-ui/core";
 
 import { DataTable, PeopleArea } from "Component";
 import { AppStoreProvider, useAppStore } from "AppStore";
@@ -56,8 +56,17 @@ const LoadingIndicator: React.FC = () => {
     const { isLoading } = useAppStore();
 
     return (
-        <Modal isOpen={isLoading}>
-            <Spinner size="xl" marginX="auto" display="block" />
+        <Modal
+            isOpen={isLoading}
+            size="fit-content"
+            isCentered
+        >
+            <ModalContent>
+                <Spinner
+                    size="xl"
+                    margin={3}
+                />
+            </ModalContent>
             <ModalOverlay />
         </Modal>
     );
