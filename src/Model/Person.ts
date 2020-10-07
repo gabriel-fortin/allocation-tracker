@@ -2,7 +2,7 @@ import { Id } from "Model";
 
 
 export class Person {
-    id?: Id;
+    iid?: Id;
     firstName: string;
     initial: string;
 

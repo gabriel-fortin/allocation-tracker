@@ -2,7 +2,7 @@ import { Id } from "Model";
 
 
 export class Project {
-    // id?: Id;
+    iid?: Id;
     name: string;
 
     constructor(name: string) {
