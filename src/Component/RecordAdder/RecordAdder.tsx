@@ -1,5 +1,7 @@
 import React from "react";
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, useDisclosure } from "@chakra-ui/core";
+import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, useDisclosure } from "@chakra-ui/core";
+
+import { useNewRecordFormData } from "./useNewRecordFormData";
 
 
 export const RecordAdder: React.FC = () => {
@@ -48,5 +50,14 @@ export const RecordAdder: React.FC = () => {
 };
 
 const NewRecordForm: React.FC = () => {
-    return <>The form will go in here</>;
+    const data = useNewRecordFormData();
+    return (
+        <>
+            <Select placeholder="select person">
+                {data.persons.map(person => (
+                    <option key={person.iid} value={person.iid}>{person.firstName}</option>
+                ))}
+            </Select>
+        </>
+    );
 };
