@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useContext, useEffect } from "react";
 
-import { Person, Project, Record } from "Model";
+import { Id, Person, Project, Record } from "Model";
 import { Persister } from "PersistentStore";
 
 import { AppStore, dummyAppStore } from "./AppStore";
@@ -21,6 +21,12 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
     const [projects, setProjects] = useState<Project[]>([]);
     const [records, setRecords] = useState<Record[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [currentMaxId, setCurrentMaxId] = useState<Id>(1);
+    const nextId: () => Id =
+        () => {
+            setCurrentMaxId(currentMaxId + 1);
+            return currentMaxId + 1;
+        }
 
     // initial data load from persister
     useEffect(() => {
@@ -29,6 +35,9 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
             persister.retrieveProjects(),
             persister.retrieveRecords(),
         ]).then(([persons, projects, records]) => {
+            const chooseBigger = (acc: Id, x: { iid: Id }) => Math.max(acc, x.iid);
+            const maxId = [...persons, ...projects, ...records].reduce(chooseBigger, 0);
+            setCurrentMaxId(maxId);
             setPersons(persons);
             setProjects(projects);
             setRecords(records);
@@ -44,17 +53,20 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
             projects,
             records,
             isLoading,
-            addPerson: (newPerson) => {
+            addPerson: (firstName) => {
+                const newPerson = new Person(nextId(), firstName, firstName[0]);
                 const updatedPersons = [newPerson, ...persons];
                 setPersons(updatedPersons)
                 persister.storePersons(updatedPersons);
             },
-            addProject: (newProject) => {
+            addProject: (projectName: string) => {
+                const newProject = new Project(nextId(), projectName);
                 const updatedProjects = [newProject, ...projects];
                 setProjects(updatedProjects);
                 persister.storeProjects(updatedProjects);
             },
-            addRecord: (newRecord) => {
+            addRecord: (personId, projectId, date) => {
+                const newRecord = new Record(nextId(), personId, projectId, date, 1);
                 const updatedRecords = [newRecord, ...records];
                 setRecords(updatedRecords);
                 persister.storeRecords(updatedRecords);

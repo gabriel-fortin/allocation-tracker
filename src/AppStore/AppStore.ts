@@ -1,12 +1,12 @@
-import { Person, Project, Record } from "Model";
+import { Id, Person, Project, Record } from "Model";
 
 export interface AppStore {
     persons: Person[],
     projects: Project[],
     records: Record[],
-    addRecord: (record: Record) => void;
-    addPerson: (person: Person) => void;
-    addProject: (project: Project) => void;
+    addRecord: (personId: Id, projectId: Id, date: Date) => void;
+    addPerson: (firstName: string) => void;
+    addProject: (projectName: string) => void;
 
     isLoading: boolean;
 }
