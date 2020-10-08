@@ -42,7 +42,7 @@ export const DataTable: React.FC = () => {
             {/*  projects' area  */}
             <Grid {...projectAreaProps}>
                 {projects.map(project =>
-                    <ProjectCell {...project} {...borders} borderRightWidth={2} />
+                    <ProjectCell {...project} key={project.iid} {...borders} borderRightWidth={2} />
                 )}
             </Grid>
 

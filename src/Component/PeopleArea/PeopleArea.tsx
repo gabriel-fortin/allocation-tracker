@@ -32,6 +32,7 @@ export const PeopleArea: React.FC = () => {
                 // TODO: display person's avatar using the right color
 
                 <Stack
+                    key={person.iid}
                     isInline
                     border="1px solid"
                     borderColor="green.300"
