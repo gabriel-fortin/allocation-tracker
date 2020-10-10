@@ -1,51 +1,29 @@
 import React from "react";
-import { Button, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Select, useDisclosure } from "@chakra-ui/core";
+import { Select } from "@chakra-ui/core";
+
+import { ButtonWithLinkedModal, ModalButtonAction } from "Component";
 
 import { useNewRecordFormData } from "./useNewRecordFormData";
 
 
 export const RecordAdder: React.FC = () => {
-    const { isOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
-
-    const userAcceptsNewRecord = () => {};
+    const userAcceptsNewRecord: ModalButtonAction =
+        (closeModal) => {
+            console.log(`Record Adding  --  accepted`);
+            closeModal();
+        };
 
     return (
-        <>
-            <Button
-                leftIcon="add"
-                variantColor="pink"
-                variant="solid"
-                onClick={openModal}
-            >
-                Add record
-            </Button>
-
-            <Modal
-                onClose={closeModal}
-                isOpen={isOpen}
-                // initialFocusRef=the first field of the form, probably
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>
-                        Add record
-                    </ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <NewRecordForm />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            variantColor="pink"
-                            variant="outline"
-                            onClick={userAcceptsNewRecord}
-                        >
-                            Add
-                        </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        </>
+        <ButtonWithLinkedModal
+            variantColor="pink"  // can I make this optional?
+            triggerButtonContent="Add record"
+            modalButtonContent="Add"
+            modalTitleContent="Add record"
+            modalButtonAction={userAcceptsNewRecord}
+            propsForTriggerButton={{ leftIcon: "add" }}
+        >
+            <NewRecordForm />
+        </ButtonWithLinkedModal>
     );
 };
 
