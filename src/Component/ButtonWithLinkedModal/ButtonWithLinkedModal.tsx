@@ -10,17 +10,21 @@ export const ButtonWithLinkedModal: React.FC<ButtonWithLinkedModalProps> = ({
     modalButtonContent,
     modalTitleContent,
     modalButtonAction,
-    propsForTriggerButton,
+    propsForTriggerButton: userPropsForTriggerButton,
     children
 }) => {
     const { isOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
 
+    const defaultPropsForTriggerButton: typeof userPropsForTriggerButton = {
+        variantColor: variantColor,
+        variant: "solid",
+    };
+
     return (
         <>
             <Button
-                {...propsForTriggerButton}
-                variantColor={variantColor}
-                variant="solid"
+                {...defaultPropsForTriggerButton}
+                {...userPropsForTriggerButton}
                 onClick={openModal}
             >
                 {triggerButtonContent}
