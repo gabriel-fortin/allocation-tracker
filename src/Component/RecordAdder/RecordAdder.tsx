@@ -15,10 +15,10 @@ export const RecordAdder: React.FC = () => {
 
     return (
         <ButtonWithLinkedModal
-            variantColor="pink"  // can I make this optional?
+            variantColor="pink"
             triggerButtonContent="Add record"
-            modalButtonContent="Add"
             modalTitleContent="Add record"
+            modalButtonContent="Add"
             modalButtonAction={userAcceptsNewRecord}
             propsForTriggerButton={{ leftIcon: "add" }}
         >
