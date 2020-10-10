@@ -1,9 +1,11 @@
-import React from "react";
-import { Text, BoxProps, Grid, Box, GridProps, Stack } from "@chakra-ui/core";
+import React, { createRef, useState } from "react";
+import { Text, BoxProps, Grid, Box, GridProps, Stack, Input, FormLabel, FormHelperText } from "@chakra-ui/core";
 
 import { Day, Person, Project, Value } from "Model";
+import { ButtonWithLinkedModal, ModalButtonAction } from "Component";
 
 import { useDataTableData, Days, Persons, Projects } from "./useDataTableData";
+import { useAddProjectData } from "./useAddProjectData";
 
 
 export const DataTable: React.FC = () => {
@@ -44,6 +46,7 @@ export const DataTable: React.FC = () => {
                 {projects.map(project =>
                     <ProjectCell {...project} key={project.iid} {...borders} borderRightWidth={2} />
                 )}
+                <AddProject />
             </Grid>
 
             {/*  assignments' area  */}
@@ -64,6 +67,61 @@ const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
         <Box {...boxProps}
         >
             {name}
+        </Box>
+    );
+};
+
+const AddProject: React.FC = () => {
+    const data = useAddProjectData();
+    const projectNameRef = createRef<HTMLInputElement>();
+    const [isInvalid, setIsInvalid] = useState(false);
+    const [infoText, setInfoText] = useState("");
+
+    const removeInvalidity = () => setIsInvalid(false);
+
+    const addProject: ModalButtonAction = (closeModal) => {
+        console.log(`adding project (NOT IMPLEMENTED)`);
+        console.log(projectNameRef.current?.value);
+
+        if (!projectNameRef.current || !projectNameRef.current.value) {
+            setIsInvalid(true);
+            setInfoText("You want to tell me THAT is your project name?")
+            return;
+        }
+
+        data.addProject(projectNameRef.current.value);
+        closeModal();
+    };
+
+    return (
+        <Box>
+            <ButtonWithLinkedModal
+                variantColor="cyan"
+                triggerButtonContent="Add Project"
+                modalTitleContent="Add Project"
+                modalButtonContent="Add"
+                modalButtonAction={addProject}
+                propsForTriggerButton={{
+                    variant: "link",
+                    size: "sm",
+                    leftIcon: "add",
+                }}
+            >
+                <FormLabel htmlFor="projectName">
+                    Project name
+                </FormLabel>
+                <Input
+                    id="projectName"
+                    ref={projectNameRef}
+                    isInvalid={isInvalid}
+                    onFocus={removeInvalidity}
+                    onChange={removeInvalidity}
+                    
+                />
+                <FormHelperText>
+                    {infoText}
+                </FormHelperText>
+            </ButtonWithLinkedModal>
         </Box>
     );
 };
