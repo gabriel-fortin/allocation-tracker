@@ -53,7 +53,7 @@ export const DataTable: React.FC = () => {
             <Grid {...dataAreaProps}>
                 {projects.map((project, i) => (
                     project.days.map((day, j) =>
-                        <DataCell {...day} gridRow={i} key={`${i}_${j}`} {...borders}/>
+                        <DataCell {...day} gridRow={i+1} key={`${i}_${j}`} {...borders}/>
                     )
                 ))}
             </Grid>
