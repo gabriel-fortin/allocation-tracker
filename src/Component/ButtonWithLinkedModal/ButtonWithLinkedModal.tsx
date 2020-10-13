@@ -11,6 +11,7 @@ export const ButtonWithLinkedModal: React.FC<ButtonWithLinkedModalProps> = ({
     modalTitleContent,
     modalButtonAction,
     propsForTriggerButton: userPropsForTriggerButton,
+    propsForModal: userPropsForModal,
     children
 }) => {
     const { isOpen, onOpen: openModal, onClose: closeModal } = useDisclosure();
@@ -31,6 +32,7 @@ export const ButtonWithLinkedModal: React.FC<ButtonWithLinkedModalProps> = ({
             </Button>
 
             <Modal
+                {...userPropsForModal}
                 onClose={closeModal}
                 isOpen={isOpen}
             // initialFocusRef=the first field of the form, probably
