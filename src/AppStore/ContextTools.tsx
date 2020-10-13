@@ -65,8 +65,8 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
                 setProjects(updatedProjects);
                 persister.storeProjects(updatedProjects);
             },
-            addRecord: (personId, projectId, date) => {
-                const newRecord = new Record(nextId(), personId, projectId, date, 1);
+            addRecord: (personId, projectId, date, amount = 1) => {
+                const newRecord = new Record(nextId(), personId, projectId, date, amount);
                 const updatedRecords = [newRecord, ...records];
                 setRecords(updatedRecords);
                 persister.storeRecords(updatedRecords);

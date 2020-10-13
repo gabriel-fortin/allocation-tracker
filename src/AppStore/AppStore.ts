@@ -4,7 +4,7 @@ export interface AppStore {
     persons: Person[],
     projects: Project[],
     records: Record[],
-    addRecord: (personId: Id, projectId: Id, date: Date) => void;
+    addRecord: (personId: Id, projectId: Id, date: Date, amount: number) => void;
     addPerson: (firstName: string) => void;
     addProject: (projectName: string) => void;
 
@@ -15,8 +15,8 @@ export const dummyAppStore: AppStore = {
     persons: [],
     projects: [],
     records: [],
-    addPerson: (x) => {},
-    addProject: (x) => {},
-    addRecord: (x) => {},
+    addPerson: () => {},
+    addProject: () => {},
+    addRecord: () => {},
     isLoading: false,
 };
