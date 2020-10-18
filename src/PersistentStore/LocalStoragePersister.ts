@@ -1,4 +1,4 @@
-import { Person, Project, Record } from "Model";
+import { Person, Project, Record, WithId } from "Model";
 import { Persister } from "PersistentStore";
 
 
@@ -7,7 +7,7 @@ const PROJECTS = "projects";
 const RECORDS = "records";
 
 export class LocalStoragePersister implements Persister {
-    retrievePersons(): Promise<Person[]> {
+    retrievePersons(): Promise<WithId<Person>[]> {
         const retrievedPersons = window.localStorage.getItem(PERSONS);
         if (retrievedPersons === null) return Promise.resolve([]);
 
@@ -28,7 +28,7 @@ export class LocalStoragePersister implements Persister {
         return RandomlyDelayedPromise.resolve(JSON.parse(retrievedRecords));
     }
 
-    storePersons(persons: Person[]): Promise<void> {
+    storePersons(persons: WithId<Person>[]): Promise<void> {
         window.localStorage.setItem(PERSONS, JSON.stringify(persons));
         return RandomlyDelayedPromise.resolve();
     }

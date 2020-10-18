@@ -1,9 +1,9 @@
 import { useAppStore } from "AppStore";
-import { Person, Project } from "Model";
+import { Person, Project, WithId } from "Model";
 
 
 interface NewRecordFormData {
-    persons: Person[];
+    persons: WithId<Person>[];
     projects: Project[];
 }
 

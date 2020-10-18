@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useContext, useEffect } from "react";
 
-import { Id, Person, Project, Record } from "Model";
+import { Id, Person, Project, Record, WithId } from "Model";
 import { Persister } from "PersistentStore";
 
 import { AppStore, dummyAppStore } from "./AppStore";
@@ -17,7 +17,7 @@ interface ProviderProps {
 }
 
 export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children }) => {
-    const [persons, setPersons] = useState<Person[]>([]);
+    const [persons, setPersons] = useState<WithId<Person>[]>([]);
     const [projects, setProjects] = useState<Project[]>([]);
     const [records, setRecords] = useState<Record[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);

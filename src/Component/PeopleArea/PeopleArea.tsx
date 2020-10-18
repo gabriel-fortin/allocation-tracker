@@ -1,28 +1,29 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { Box, Button, Input,Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, useDisclosure } from "@chakra-ui/core";
 
+import { Person, WithId } from "Model";
+
 import { usePeopleData } from "./usePeopleData";
-import { Person } from "Model";
 
 
 export const PeopleArea: React.FC = () => {
     const { persons, upsertPerson, removePerson } = usePeopleData();
-    const [editedPerson, setEditedPerson] = useState<Omit<Person, "iid"> | null>(null);
+    const [editedPerson, setEditedPerson] = useState<Person | WithId<Person> | null>(null);
 
     const newPersonButtonClicked = () => {
-        const newPerson: Omit<Person, "iid"> = new Person(-1, "", "");
-        delete (newPerson as any).iid;
-        setEditedPerson(newPerson);
+        const newPerson: Person = new Person("", "");
+        setEditedPerson(newPerson); // this edited person has no id
     };
-    const personBadgeClicked = (person: Person) => {
-        setEditedPerson(person);
+    const personBadgeClicked = (person: WithId<Person>) => {
+        setEditedPerson(person); // this edited person has an id
     };
     const personEditModalCloses = () => {
         setEditedPerson(null);
     };
-    const personEditModalSaves = (person: Omit<Person, "iid">) => {
+    const personEditModalSaves = (person: Person | WithId<Person>) => {
         setEditedPerson(null);
-        upsertPerson(person);
+        upsertPerson(person); // this person might have an id
+        // it depends on whether the modal was opened for a new or existing person
     };
 
     return (
@@ -33,12 +34,13 @@ export const PeopleArea: React.FC = () => {
             <Text>
                 people
             </Text>
-            {persons.map(person =>
+            {persons.map(personWithId =>
                 <PersonBadge
-                    person={person}
-                    onClick={() => personBadgeClicked(person)}
+                    person={personWithId}
+                    onClick={() => personBadgeClicked(personWithId)}
                 />
             )}
+            {/* TODO: extract below button as separate component? */}
             <Button
                 onClick={newPersonButtonClicked}
                 leftIcon="add"
@@ -68,7 +70,6 @@ const PersonBadge: React.FC<BadgeProps> = ({ person, onClick }) => {
 
     return (
         <Stack
-            key={person.iid}
             isInline
             border="1px solid"
             borderColor="green.300"
@@ -93,9 +94,11 @@ const PersonBadge: React.FC<BadgeProps> = ({ person, onClick }) => {
 };
 
 interface EditProps{
-    edit: Omit<Person, "iid"> | null;
+    // if set to null, it will hide the modal
+    edit: Person | WithId<Person> | null;
     onClose: () => void;
-    onSave: (person: Omit<Person, "iid">) => void;
+    // an existing person instance will have an id; a new one will not
+    onSave: (person: Person | WithId<Person>) => void;
 }
 const PersonEditModal: React.FC<EditProps> =
     ({
@@ -103,11 +106,12 @@ const PersonEditModal: React.FC<EditProps> =
         onClose,
         onSave: savePerson,
     }) => {
-        const [person, setPerson] = useState<Omit<Person, "iid"> | null>(null);
-        useEffect(() => {
-            setPerson(editedPerson);
-        }, [editedPerson]);
+        const [person, setPerson] = useState<Person | WithId<Person> | null>(null);
 
+        // when caller sets a value, copy it into internal state
+        useEffect(() => setPerson(editedPerson), [editedPerson]);
+
+        // a null value for 'person' means the caller requested to hide the modal
         if (person == null) return null;
 
         const firstNameChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +125,8 @@ const PersonEditModal: React.FC<EditProps> =
 
         return (
             <Modal
-                isOpen={editedPerson !== null}
+                // isOpen={editedPerson !== null}
+                isOpen={true}
                 onClose={onClose}
             >
                 <ModalOverlay />
@@ -137,6 +142,8 @@ const PersonEditModal: React.FC<EditProps> =
                     <ModalFooter>
                         <Button
                             onClick={() => savePerson(person)}
+                            variant="outline"
+                            variantColor="green"
                         >
                             Save
                     </Button>

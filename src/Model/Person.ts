@@ -1,13 +1,8 @@
-import { Id } from "Model";
-
-
 export class Person {
-    iid: Id;
     firstName: string;
     initial: string;
 
-    constructor(id: Id, firstName: string, initial: string) {
-        this.iid = id;
+    constructor(firstName: string, initial: string) {
         this.firstName = firstName;
         this.initial = initial;
     }

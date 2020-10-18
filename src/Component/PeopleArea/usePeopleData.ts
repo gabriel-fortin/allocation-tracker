@@ -1,10 +1,10 @@
 import { useAppStore } from "AppStore";
-import { Id, Person } from "Model";
+import { Id, Person, WithId } from "Model";
 
 
 export const usePeopleData: () => {
-    persons: Person[],
-    upsertPerson: (person: Omit<Person, "iid">) => void,
+    persons: WithId<Person>[],
+    upsertPerson: (person: Person | WithId<Person>) => void,
     removePerson: (personId: Id) => void,
 } = () => {
     const appStore = useAppStore();

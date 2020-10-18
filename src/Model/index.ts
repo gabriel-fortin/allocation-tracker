@@ -5,3 +5,4 @@ export { Value } from "./Value";
 export { Record } from "./Record";
 
 export type Id = import("./Id").Id;
+export type WithId<T> = import("./WithId").WithId<T>;

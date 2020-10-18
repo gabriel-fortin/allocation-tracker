@@ -1,11 +1,11 @@
-import { Person, Project, Record } from "Model"
+import { Person, Project, Record, WithId } from "Model"
 
 
 export interface Persister {
-    retrievePersons: () => Promise<Person[]>;
+    retrievePersons: () => Promise<WithId<Person>[]>;
     retrieveProjects: () => Promise<Project[]>,
     retrieveRecords: () => Promise<Record[]>,
-    storePersons: (persons: Person[]) => Promise<void>;
+    storePersons: (persons: WithId<Person>[]) => Promise<void>;
     storeProjects: (projects: Project[]) => Promise<void>;
     storeRecords: (records: Record[]) => Promise<void>;
 }

@@ -1,7 +1,7 @@
-import { Id, Person, Project, Record } from "Model";
+import { Id, Person, Project, Record, WithId } from "Model";
 
 export interface AppStore {
-    persons: Person[],
+    persons: WithId<Person>[],
     projects: Project[],
     records: Record[],
     addRecord: (personId: Id, projectId: Id, date: Date, amount: number) => void;
