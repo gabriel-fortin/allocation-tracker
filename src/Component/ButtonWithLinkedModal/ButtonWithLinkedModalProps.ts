@@ -1,4 +1,4 @@
-import { IButton, IModal } from "@chakra-ui/core";
+import { ButtonProps, IButton, IModal } from "@chakra-ui/core";
 
 import { ModalButtonAction } from "./ModalButtonAction";
 
@@ -10,6 +10,6 @@ export interface ButtonWithLinkedModalProps {
     modalButtonContent?: React.ReactNode;
     modalButtonAction: ModalButtonAction;
 
-    propsForTriggerButton?: Omit<IButton, "children">;
+    propsForTriggerButton?: Omit<ButtonProps, "children">;
     propsForModal?: Omit<IModal, "children">;
 }
