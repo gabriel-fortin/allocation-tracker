@@ -1,22 +1,28 @@
-import React, { useState } from "react";
-import { Box, Button, Input, InputGroup, InputRightElement, Stack, Text } from "@chakra-ui/core";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Box, Button, Input,Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, useDisclosure } from "@chakra-ui/core";
 
 import { usePeopleData } from "./usePeopleData";
+import { Person } from "Model";
 
 
 export const PeopleArea: React.FC = () => {
-    const { persons, addPerson, removePerson } = usePeopleData();
-    const [inputValue, setInputValue] = useState("");
+    const { persons, upsertPerson, removePerson } = usePeopleData();
+    const [editedPerson, setEditedPerson] = useState<Omit<Person, "iid"> | null>(null);
 
-    const buttonClicked = () => {
-        console.log(`button click START`);
-        setInputValue("");
-        addPerson(inputValue);
-        console.log(`button click END`);
-        
+    const newPersonButtonClicked = () => {
+        const newPerson: Omit<Person, "iid"> = new Person(-1, "", "");
+        delete (newPerson as any).iid;
+        setEditedPerson(newPerson);
     };
-    const inputValueHasChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputValue(e.currentTarget.value);
+    const personBadgeClicked = (person: Person) => {
+        setEditedPerson(person);
+    };
+    const personEditModalCloses = () => {
+        setEditedPerson(null);
+    };
+    const personEditModalSaves = (person: Omit<Person, "iid">) => {
+        setEditedPerson(null);
+        upsertPerson(person);
     };
 
     return (
@@ -27,65 +33,115 @@ export const PeopleArea: React.FC = () => {
             <Text>
                 people
             </Text>
-            {persons.map(person => (
-
-                // TODO: display person's avatar using the right color
-
-                <Stack
-                    key={person.iid}
-                    isInline
-                    border="1px solid"
-                    borderColor="green.300"
-                    marginLeft={2}
-                >
-                    <Box
-                        backgroundColor="green.300"
-                        color="white"
-                        fontWeight="bold"
-                        paddingX={1}
-                    >
-                        {`${person.initial}`}
-                    </Box>
-                    <Box
-                        marginRight={2}
-                    >
-                        {`${person.firstName}`}
-                    </Box>
-                </Stack>
-            ))}
-            <InputGroup
-                size="sm"
-                marginLeft="1em"
-            >
-                <Input
-                    variant="outline"
-                    // variant="flushed"
-                    // variant="filled"
-                    // variant="unstyled"
-                    borderColor="green.300"
-                    focusBorderColor="green.500"
-                    width="15em"
-                    placeholder="person's name"
-                    value={inputValue}
-                    onChange={inputValueHasChanged}
+            {persons.map(person =>
+                <PersonBadge
+                    person={person}
+                    onClick={() => personBadgeClicked(person)}
                 />
-                <InputRightElement
-                    width="5em" // effectively, the size of the button
-                >
-                    <Button
-                        size="sm" // matches size of InputGroup
-                        width="100%"
-                        variant="solid"
-                        // variant="outline"
-                        // variant="ghost"
-                        variantColor="green"
-                        leftIcon="add"
-                        onClick={buttonClicked}
-                    >
-                        Add
-                    </Button>
-                </InputRightElement>
-            </InputGroup>
+            )}
+            <Button
+                onClick={newPersonButtonClicked}
+                leftIcon="add"
+                variant="link"
+                variantColor="green"
+                size="sm"
+                marginLeft={4}
+            >
+                Add Person
+            </Button>
+            <PersonEditModal
+                edit={editedPerson}
+                onClose={personEditModalCloses}
+                onSave={personEditModalSaves}
+            />
         </Stack>
     );
 };
+
+interface BadgeProps {
+    person: Person;
+    onClick: () => void;
+}
+
+const PersonBadge: React.FC<BadgeProps> = ({ person, onClick }) => {
+    // TODO: display person's avatar using the right color
+
+    return (
+        <Stack
+            key={person.iid}
+            isInline
+            border="1px solid"
+            borderColor="green.300"
+            marginLeft={2}
+            onClick={onClick}
+        >
+            <Box
+                backgroundColor="green.300"
+                color="white"
+                fontWeight="bold"
+                paddingX={1}
+            >
+                {`${person.initial}`}
+            </Box>
+            <Box
+                marginRight={2}
+            >
+                {`${person.firstName}`}
+            </Box>
+        </Stack>
+    );
+};
+
+interface EditProps{
+    edit: Omit<Person, "iid"> | null;
+    onClose: () => void;
+    onSave: (person: Omit<Person, "iid">) => void;
+}
+const PersonEditModal: React.FC<EditProps> =
+    ({
+        edit: editedPerson,
+        onClose,
+        onSave: savePerson,
+    }) => {
+        const [person, setPerson] = useState<Omit<Person, "iid"> | null>(null);
+        useEffect(() => {
+            setPerson(editedPerson);
+        }, [editedPerson]);
+
+        if (person == null) return null;
+
+        const firstNameChange = (e: ChangeEvent<HTMLInputElement>) => {
+            const firstName: typeof person.firstName = e.currentTarget.value;
+            setPerson({
+                ...person,
+                firstName,
+                initial: firstName[0],
+            });
+        };
+
+        return (
+            <Modal
+                isOpen={editedPerson !== null}
+                onClose={onClose}
+            >
+                <ModalOverlay />
+                <ModalContent>
+                    <ModalHeader>Edit Person</ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody>
+                        <Input
+                            value={person.firstName}
+                            onChange={firstNameChange}
+                        />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button
+                            onClick={() => savePerson(person)}
+                        >
+                            Save
+                    </Button>
+                    </ModalFooter>
+                </ModalContent>
+            </Modal>
+        );
+    };

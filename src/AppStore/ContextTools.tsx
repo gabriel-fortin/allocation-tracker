@@ -53,10 +53,18 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
             projects,
             records,
             isLoading,
-            addPerson: (firstName) => {
-                const newPerson = new Person(nextId(), firstName, firstName[0]);
+            addPerson: (personWithoutId) => {
+                const newPerson = {...personWithoutId, iid: nextId()};
                 const updatedPersons = [newPerson, ...persons];
                 setPersons(updatedPersons)
+                persister.storePersons(updatedPersons);
+            },
+            updatePerson: (id, person) => {
+                const updatedPersons = persons.map(p => {
+                    if (p.iid !== id) return p;
+                    return { ...p, ...person };
+                });
+                setPersons(updatedPersons);
                 persister.storePersons(updatedPersons);
             },
             addProject: (projectName: string) => {
