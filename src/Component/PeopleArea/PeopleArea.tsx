@@ -1,10 +1,17 @@
-import React, { ChangeEvent, useEffect, useState } from "react";
-import { Box, Button, Input,Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack, Text, useDisclosure } from "@chakra-ui/core";
+import React, { useState } from "react";
+import { Button, Stack, Text } from "@chakra-ui/core";
 
 import { Person, WithId } from "Model";
 
 import { usePeopleData } from "./usePeopleData";
+import { PersonEditModal } from "./PersonEditModal";
+import { PersonBadge } from "./PersonBadge";
 
+
+// TODO: add color to model and modal
+// TODO: display person's avatar using the right color
+
+// TODO: implement removing persons
 
 export const PeopleArea: React.FC = () => {
     const { persons, upsertPerson, removePerson } = usePeopleData();
@@ -40,17 +47,9 @@ export const PeopleArea: React.FC = () => {
                     onClick={() => personBadgeClicked(personWithId)}
                 />
             )}
-            {/* TODO: extract below button as separate component? */}
-            <Button
+            <AddPersonButton
                 onClick={newPersonButtonClicked}
-                leftIcon="add"
-                variant="link"
-                variantColor="green"
-                size="sm"
-                marginLeft={4}
-            >
-                Add Person
-            </Button>
+            />
             <PersonEditModal
                 edit={editedPerson}
                 onClose={personEditModalCloses}
@@ -60,95 +59,19 @@ export const PeopleArea: React.FC = () => {
     );
 };
 
-interface BadgeProps {
-    person: Person;
-    onClick: () => void;
-}
-
-const PersonBadge: React.FC<BadgeProps> = ({ person, onClick }) => {
-    // TODO: display person's avatar using the right color
-
+const AddPersonButton: React.FC<{
+    onClick: () => void,
+}> = ({ onClick }) => {
     return (
-        <Stack
-            isInline
-            border="1px solid"
-            borderColor="green.300"
-            marginLeft={2}
+        <Button
             onClick={onClick}
+            leftIcon="add"
+            variant="link"
+            variantColor="green"
+            size="sm"
+            marginLeft={4}
         >
-            <Box
-                backgroundColor="green.300"
-                color="white"
-                fontWeight="bold"
-                paddingX={1}
-            >
-                {`${person.initial}`}
-            </Box>
-            <Box
-                marginRight={2}
-            >
-                {`${person.firstName}`}
-            </Box>
-        </Stack>
+            Add Person
+        </Button>
     );
 };
-
-interface EditProps{
-    // if set to null, it will hide the modal
-    edit: Person | WithId<Person> | null;
-    onClose: () => void;
-    // an existing person instance will have an id; a new one will not
-    onSave: (person: Person | WithId<Person>) => void;
-}
-const PersonEditModal: React.FC<EditProps> =
-    ({
-        edit: editedPerson,
-        onClose,
-        onSave: savePerson,
-    }) => {
-        const [person, setPerson] = useState<Person | WithId<Person> | null>(null);
-
-        // when caller sets a value, copy it into internal state
-        useEffect(() => setPerson(editedPerson), [editedPerson]);
-
-        // a null value for 'person' means the caller requested to hide the modal
-        if (person == null) return null;
-
-        const firstNameChange = (e: ChangeEvent<HTMLInputElement>) => {
-            const firstName: typeof person.firstName = e.currentTarget.value;
-            setPerson({
-                ...person,
-                firstName,
-                initial: firstName[0],
-            });
-        };
-
-        return (
-            <Modal
-                // isOpen={editedPerson !== null}
-                isOpen={true}
-                onClose={onClose}
-            >
-                <ModalOverlay />
-                <ModalContent>
-                    <ModalHeader>Edit Person</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                        <Input
-                            value={person.firstName}
-                            onChange={firstNameChange}
-                        />
-                    </ModalBody>
-                    <ModalFooter>
-                        <Button
-                            onClick={() => savePerson(person)}
-                            variant="outline"
-                            variantColor="green"
-                        >
-                            Save
-                    </Button>
-                    </ModalFooter>
-                </ModalContent>
-            </Modal>
-        );
-    };
