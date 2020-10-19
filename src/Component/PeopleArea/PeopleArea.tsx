@@ -18,7 +18,7 @@ export const PeopleArea: React.FC = () => {
     const [editedPerson, setEditedPerson] = useState<Person | WithId<Person> | null>(null);
 
     const newPersonButtonClicked = () => {
-        const newPerson: Person = new Person("", "");
+        const newPerson: Person = new Person("", "", "#666666");
         setEditedPerson(newPerson); // this edited person has no id
     };
     const personBadgeClicked = (person: WithId<Person>) => {

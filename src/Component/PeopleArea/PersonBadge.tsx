@@ -11,15 +11,17 @@ interface BadgeProps {
 
 
 export const PersonBadge: React.FC<BadgeProps & BoxProps> = ({ person, onClick, ...boxProps }) => {
+    const color = person.color;
+
     return (
         <Stack {...boxProps}
             isInline
             border="1px solid"
-            borderColor="green.300"
+            borderColor={color}
             onClick={onClick}
         >
             <Box
-                backgroundColor="green.300"
+                backgroundColor={color}
                 color="white"
                 fontWeight="bold"
                 paddingX={1}

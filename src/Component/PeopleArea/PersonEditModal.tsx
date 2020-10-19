@@ -1,5 +1,5 @@
 import React, { useState, useEffect, ChangeEvent } from "react";
-import { Button, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay } from "@chakra-ui/core";
+import { Button, FormLabel, Input, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, Stack } from "@chakra-ui/core";
 
 import { Person, WithId } from "Model";
 
@@ -37,6 +37,14 @@ export const PersonEditModal: React.FC<EditProps> = ({
         });
     };
 
+    const colorChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const color: typeof person.color = e.currentTarget.value;
+        setPerson({
+            ...person,
+            color,
+        });
+    };
+
     return (
         <Modal
             isOpen={true}
@@ -47,10 +55,24 @@ export const PersonEditModal: React.FC<EditProps> = ({
                 <ModalHeader>Edit Person</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
-                    <Input
-                        value={person.firstName}
-                        onChange={firstNameChange}
-                    />
+                    <Stack spacing={5}>
+                        <FormLabel>
+                            First Name
+                            <Input
+                                value={person.firstName}
+                                onChange={firstNameChange}
+                            />
+                        </FormLabel>
+                        <FormLabel>
+                            Color
+                            <Input
+                                value={person.color}
+                                onChange={colorChange}
+                                type="color"
+                                paddingX={0}
+                            />
+                        </FormLabel>
+                    </Stack>
                 </ModalBody>
                 <ModalFooter>
                     <Button
