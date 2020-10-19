@@ -34,27 +34,30 @@ export const PeopleArea: React.FC = () => {
     };
 
     return (
-        <Stack
-            isInline
-            align="center"
-        >
+        <Stack>
             <Text>
                 people
             </Text>
-            {persons.map(personWithId =>
-                <PersonBadge
-                    person={personWithId}
-                    onClick={() => personBadgeClicked(personWithId)}
+            <Stack
+                isInline
+                spacing={5}
+            >
+                {persons.map(personWithId =>
+                    <PersonBadge
+                        person={personWithId}
+                        onClick={() => personBadgeClicked(personWithId)}
+                        marginRight={2}
+                    />
+                )}
+                <AddPersonButton
+                    onClick={newPersonButtonClicked}
                 />
-            )}
-            <AddPersonButton
-                onClick={newPersonButtonClicked}
-            />
-            <PersonEditModal
-                edit={editedPerson}
-                onClose={personEditModalCloses}
-                onSave={personEditModalSaves}
-            />
+                <PersonEditModal
+                    edit={editedPerson}
+                    onClose={personEditModalCloses}
+                    onSave={personEditModalSaves}
+                />
+            </Stack>
         </Stack>
     );
 };
@@ -69,7 +72,6 @@ const AddPersonButton: React.FC<{
             variant="link"
             variantColor="green"
             size="sm"
-            marginLeft={4}
         >
             Add Person
         </Button>
