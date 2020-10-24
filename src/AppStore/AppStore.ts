@@ -5,8 +5,8 @@ export interface AppStore {
     projects: Project[],
     records: Record[],
     addRecord: (personId: Id, projectId: Id, date: Date, amount: number) => void;
-    addPerson: (personWithoutId: Omit<Person, "iid">) => void;
-    updatePerson: (id: Id, person: Omit<Person, "iid">) => void;
+    addPerson: (personWithoutId: Person) => void;
+    updatePerson: (id: Id, person: Person) => void;
     addProject: (projectName: string) => void;
 
     isLoading: boolean;
