@@ -1,17 +1,17 @@
-import { Project, Day, Person, Value } from "Model";
+import { Project, Day, Person, Value, WithId } from "Model";
 import { AppStore, useAppStore } from "AppStore";
 
 
 // types for nesting thingies
 
 export interface Projects<T={}> {
-    projects: (Project & T)[];
+    projects: (WithId<Project> & T)[];
 }
 export interface Days<T={}> {
     days: (Day & T)[];
 }
 export interface Persons<T={}> {
-    persons: (Person & T)[];
+    persons: (WithId<Person> & T)[];
 }
 
 
