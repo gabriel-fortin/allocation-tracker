@@ -1,4 +1,4 @@
-import React, { createRef, useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import { Text, BoxProps, Grid, Box, GridProps, Stack, Input, FormLabel, FormHelperText } from "@chakra-ui/core";
 
 import { Day, Person, Project, Value } from "Model";
@@ -73,23 +73,23 @@ const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
 
 const AddProject: React.FC = () => {
     const data = useAddProjectData();
-    const projectNameRef = createRef<HTMLInputElement>();
-    const [isInvalid, setIsInvalid] = useState(false);
-    const [infoText, setInfoText] = useState("");
+    const [projectName, setProjectName] = useState("");
+    const [nameHasFocus, setNameHasFocus] = useState(false);
 
-    const removeInvalidity = () => setIsInvalid(false);
+    const isNameValid = projectName !== "";
+    const showNameError = !isNameValid && nameHasFocus;
+
+    const nameChanges = (e:ChangeEvent<HTMLInputElement>) => {
+        setNameHasFocus(false);
+        const newProjectNameValue = e.currentTarget.value;
+        setProjectName(newProjectNameValue);
+    }
 
     const addProject: ModalButtonAction = (closeModal) => {
+        if (!isNameValid) return;
+        
         console.log(`adding project (NOT IMPLEMENTED)`);
-        console.log(projectNameRef.current?.value);
-
-        if (!projectNameRef.current || !projectNameRef.current.value) {
-            setIsInvalid(true);
-            setInfoText("You want to tell me THAT is your project name?")
-            return;
-        }
-
-        data.addProject(projectNameRef.current.value);
+        data.addProject(projectName);
         closeModal();
     };
 
@@ -112,15 +112,16 @@ const AddProject: React.FC = () => {
                 </FormLabel>
                 <Input
                     id="projectName"
-                    ref={projectNameRef}
-                    isInvalid={isInvalid}
-                    onFocus={removeInvalidity}
-                    onChange={removeInvalidity}
-                    
+                    isInvalid={showNameError}
+                    onChange={nameChanges}
+                    onBlur={() => setNameHasFocus(true)}
+                    onFocus={() => setNameHasFocus(false)}
                 />
-                <FormHelperText>
-                    {infoText}
-                </FormHelperText>
+                {showNameError &&
+                    <FormHelperText>
+                        You want to tell me THAT is your project name?
+                    </FormHelperText>
+                }
             </ButtonWithLinkedModal>
         </Box>
     );
