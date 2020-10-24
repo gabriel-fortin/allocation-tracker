@@ -4,7 +4,7 @@ import { Person, Project, WithId } from "Model";
 
 interface NewRecordFormData {
     persons: WithId<Person>[];
-    projects: Project[];
+    projects: WithId<Project>[];
 }
 
 export const useNewRecordFormData: () => NewRecordFormData =

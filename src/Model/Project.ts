@@ -1,12 +1,7 @@
-import { Id } from "Model";
-
-
 export class Project {
-    iid: Id;
     name: string;
 
-    constructor(id: Id, name: string) {
-        this.iid = id;
+    constructor(name: string) {
         this.name = name;
     }
 }
