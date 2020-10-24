@@ -1,8 +1,7 @@
-import React, { ChangeEvent, useState } from "react";
-import { Text, BoxProps, Grid, Box, GridProps, Stack, Input, FormLabel, FormHelperText } from "@chakra-ui/core";
+import React, { ChangeEvent, useEffect, useState } from "react";
+import { Text, BoxProps, Grid, Box, GridProps, Stack, Input, FormLabel, FormHelperText, Button, ModalOverlay, ModalCloseButton, ModalHeader, ModalContent, ModalFooter, Modal, ModalBody } from "@chakra-ui/core";
 
-import { Day, Person, Project, Value } from "Model";
-import { ButtonWithLinkedModal, ModalButtonAction } from "Component";
+import { Day, Person, Project, Value, WithId } from "Model";
 
 import { useDataTableData, Days, Persons, Projects } from "./useDataTableData";
 import { useAddProjectData } from "./useAddProjectData";
@@ -46,7 +45,7 @@ export const DataTable: React.FC = () => {
                 {projects.map(project =>
                     <ProjectCell {...project} key={project.iid} {...borders} borderRightWidth={2} />
                 )}
-                <AddProject />
+                <AddProjectButton />
             </Grid>
 
             {/*  assignments' area  */}
@@ -71,59 +70,115 @@ const ProjectCell: React.FC<Project & BoxProps> = ({ name, ...boxProps }) => {
     );
 };
 
-const AddProject: React.FC = () => {
-    const data = useAddProjectData();
-    const [projectName, setProjectName] = useState("");
-    const [nameHasFocus, setNameHasFocus] = useState(false);
+const AddProjectButton: React.FC = () => {
+    const { addProject: addProjectToStore } = useAddProjectData();
+    const [projectToEdit, setProjectToEdit] = useState<Project | null>(null);
 
-    const isNameValid = projectName !== "";
-    const showNameError = !isNameValid && nameHasFocus;
+    const buttonClick = () => {
+        // TODO: creating a new Project object is business logic; where should it be moved to?
+        setProjectToEdit(new Project(""));
+    };
 
-    const nameChanges = (e:ChangeEvent<HTMLInputElement>) => {
-        setNameHasFocus(false);
-        const newProjectNameValue = e.currentTarget.value;
-        setProjectName(newProjectNameValue);
-    }
-
-    const addProject: ModalButtonAction = (closeModal) => {
-        if (!isNameValid) return;
-        
-        console.log(`adding project (NOT IMPLEMENTED)`);
-        data.addProject(projectName);
-        closeModal();
+    const onProjectSave = (project: Project) => {
+        setProjectToEdit(null); // hide the modal
+        addProjectToStore(project);
     };
 
     return (
-        <Box>
-            <ButtonWithLinkedModal
+        <>
+            <Button
+                onClick={buttonClick}
+                variant="link"
                 variantColor="cyan"
-                triggerButtonContent="Add Project"
-                modalTitleContent="Add Project"
-                modalButtonContent="Add"
-                modalButtonAction={addProject}
-                propsForTriggerButton={{
-                    variant: "link",
-                    size: "sm",
-                    leftIcon: "add",
-                }}
+                size="sm"
+                leftIcon="add"
             >
-                <FormLabel htmlFor="projectName">
-                    Project name
-                </FormLabel>
-                <Input
-                    id="projectName"
-                    isInvalid={showNameError}
-                    onChange={nameChanges}
-                    onBlur={() => setNameHasFocus(true)}
-                    onFocus={() => setNameHasFocus(false)}
-                />
-                {showNameError &&
-                    <FormHelperText>
-                        You want to tell me THAT is your project name?
-                    </FormHelperText>
-                }
-            </ButtonWithLinkedModal>
-        </Box>
+                Add Project
+            </Button>
+            <ProjectEditModal
+                projectToEdit={projectToEdit}
+                onSave={onProjectSave}
+            />
+        </>
+    );
+};
+
+const ProjectEditModal: React.FC<{
+    // if null, modal will be hidden
+    projectToEdit: Project | WithId<Project> | null,
+    onSave: (p: Project) => void
+}> = ({ projectToEdit, onSave }) => {
+    const [project, setProject] = useState<Project | WithId<Project> | null>(null);
+
+    // const [name, setName] = useState<typeof Project.name>("");
+    const [hasNameLostFocus, setHasNameLostFocus] = useState(false);
+
+    // refresh internal value when value from caller changes
+    useEffect(() => setProject(projectToEdit), [projectToEdit]);
+
+    // caller asking to hide modal
+    if (project === null) return null;
+
+    const isNameValid = project.name !== "";
+    const showNameError = !isNameValid && hasNameLostFocus;
+
+    const nameChanges = (e:ChangeEvent<HTMLInputElement>) => {
+        setHasNameLostFocus(false);
+        setProject({
+            ...project,
+            name: e.currentTarget.value,
+        });
+    }
+
+    const trySaveProject = () => {
+        if (!isNameValid) return;
+
+        onSave(project);
+        setProject(null);
+    };
+
+    const closeModal = () => {
+        setProject(null);
+        setHasNameLostFocus(false);
+    };
+
+    return (
+        <Modal
+            isOpen={true}
+            onClose={closeModal}
+        >
+            <ModalOverlay />
+            <ModalContent>
+                <ModalCloseButton />
+                <ModalHeader>Add/Edit Project</ModalHeader>
+                <ModalBody>
+                    <FormLabel htmlFor="projectName">
+                        Project name
+                    </FormLabel>
+                    <Input
+                        id="projectName"
+                        isInvalid={showNameError}
+                        onChange={nameChanges}
+                        onBlur={() => setHasNameLostFocus(true)}
+                        onFocus={() => setHasNameLostFocus(false)}
+                    />
+                    {showNameError &&
+                        <FormHelperText>
+                            You want to tell me THAT is your project name?
+                        </FormHelperText>
+                    }
+                </ModalBody>
+                <ModalFooter>
+                    <Button
+                        variant="outline"
+                        variantColor="cyan"
+                        onClick={trySaveProject}
+                        >
+                        Save
+                    </Button>
+                </ModalFooter>
+            </ModalContent>
+        </Modal>
     );
 };
 

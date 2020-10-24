@@ -1,8 +1,9 @@
 import { useAppStore } from "AppStore";
+import { Project } from "Model";
 
 
 interface Result {
-    addProject: (projectName: string) => void;
+    addProject: (project: Project) => void;
 }
 
 export const useAddProjectData: () => Result = () => {
