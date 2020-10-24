@@ -6,7 +6,7 @@ interface Result {
     addProject: (project: Project) => void;
 }
 
-export const useAddProjectData: () => Result = () => {
+export const useAddProjectButtonData: () => Result = () => {
     const appStore = useAppStore();
     
     return {
