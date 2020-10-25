@@ -9,12 +9,16 @@ interface ProjectEditModalProps {
     projectToEdit: Project | WithId<Project> | null;
 
     onSave: (p: Project) => void;
+
+    // caller can be notified when the dialog closes
+    onClose?: () => void;
 }
 
 
 export const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
     projectToEdit,
     onSave,
+    onClose: sendCloseEventToCaller = () => {},
 }) => {
     const [project, setProject] = useState<Project | WithId<Project> | null>(null);
     const [hasNameLostFocus, setHasNameLostFocus] = useState(false);
@@ -40,18 +44,19 @@ export const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
         if (!isNameValid) return;
 
         onSave(project);
-        setProject(null);
+        sendCloseEventToCaller();
     };
 
-    const closeModal = () => {
+    const closingModal = () => {
         setProject(null);
         setHasNameLostFocus(false);
+        sendCloseEventToCaller();
     };
 
     return (
         <Modal
-            isOpen={true}
-            onClose={closeModal}
+            isOpen={true}  // if modal should be closed, we'll return much earlier
+            onClose={closingModal}
         >
             <ModalOverlay />
             <ModalContent>
@@ -64,6 +69,7 @@ export const ProjectEditModal: React.FC<ProjectEditModalProps> = ({
                     <Input
                         id="projectName"
                         isInvalid={showNameError}
+                        value={project.name}
                         onChange={nameChanges}
                         onBlur={() => setHasNameLostFocus(true)}
                         onFocus={() => setHasNameLostFocus(false)}

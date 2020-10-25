@@ -73,6 +73,16 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
                 setProjects(updatedProjects);
                 persister.storeProjects(updatedProjects);
             },
+            updateProject: (id: Id, project: Project) => {
+                const updatedProjects = projects.map(p => {
+                    if (p.iid !== id) return p;
+                    return { ...p, ...project };
+                    // TODO: pick only those fields of 'project' that we're interested in
+                    //      currently it has a lot of garbage (a 'days' field with lots of nesting)
+                });
+                setProjects(updatedProjects);
+                persister.storeProjects(updatedProjects);
+            },
             addRecord: (personId, projectId, date, amount = 1) => {
                 const newRecord = new Record(nextId(), personId, projectId, date, amount);
                 const updatedRecords = [newRecord, ...records];

@@ -7,8 +7,8 @@ export interface AppStore {
     addRecord: (personId: Id, projectId: Id, date: Date, amount: number) => void;
     addPerson: (personWithoutId: Person) => void;
     updatePerson: (id: Id, person: Person) => void;
-    addProject: (project: Project) => void;
-    // TODO: 'updateProject()'
+    addProject: (projectWithoutId: Project) => void;
+    updateProject: (id: Id, project: Project) => void;
 
     isLoading: boolean;
 }
@@ -20,6 +20,7 @@ export const dummyAppStore: AppStore = {
     addPerson: () => {},
     updatePerson: () => {},
     addProject: () => {},
+    updateProject: () => {},
     addRecord: () => {},
     isLoading: false,
 };
