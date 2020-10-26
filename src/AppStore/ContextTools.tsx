@@ -19,7 +19,7 @@ interface ProviderProps {
 export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children }) => {
     const [persons, setPersons] = useState<WithId<Person>[]>([]);
     const [projects, setProjects] = useState<WithId<Project>[]>([]);
-    const [records, setRecords] = useState<Record[]>([]);
+    const [records, setRecords] = useState<WithId<Record>[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [currentMaxId, setCurrentMaxId] = useState<Id>(1);
     const nextId: () => Id =
@@ -83,8 +83,8 @@ export const AppStoreProvider: React.FC<ProviderProps> = ({ persister, children 
                 setProjects(updatedProjects);
                 persister.storeProjects(updatedProjects);
             },
-            addRecord: (personId, projectId, date, amount = 1) => {
-                const newRecord = new Record(nextId(), personId, projectId, date, amount);
+            addRecord: (recordWithoutId: Record) => {
+                const newRecord = { ...recordWithoutId, iid: nextId() };
                 const updatedRecords = [newRecord, ...records];
                 setRecords(updatedRecords);
                 persister.storeRecords(updatedRecords);

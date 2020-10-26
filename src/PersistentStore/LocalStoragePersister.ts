@@ -21,7 +21,7 @@ export class LocalStoragePersister implements Persister {
         return RandomlyDelayedPromise.resolve(JSON.parse(retrievedProjects));
     }
 
-    retrieveRecords(): Promise<Record[]> {
+    retrieveRecords(): Promise<WithId<Record>[]> {
         const retrievedRecords = window.localStorage.getItem(RECORDS);
         if (retrievedRecords === null) return Promise.resolve([]);
 
@@ -38,7 +38,7 @@ export class LocalStoragePersister implements Persister {
         return RandomlyDelayedPromise.resolve();
     }
 
-    storeRecords(records: Record[]): Promise<void> {
+    storeRecords(records: WithId<Record>[]): Promise<void> {
         window.localStorage.setItem(RECORDS, JSON.stringify(records));
         return RandomlyDelayedPromise.resolve();
     }
@@ -54,7 +54,7 @@ class RandomlyDelayedPromise {
             return new Promise((resolve, reject) => {
                 setTimeout(() => {
                 resolve(x);
-            }, 600 * Math.random());
+            }, 400 * Math.random());
         });
     }
 }
