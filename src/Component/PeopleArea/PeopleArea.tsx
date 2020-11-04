@@ -44,6 +44,7 @@ export const PeopleArea: React.FC = () => {
             >
                 {persons.map(personWithId =>
                     <PersonBadge
+                        key={personWithId.iid}
                         person={personWithId}
                         onClick={() => personBadgeClicked(personWithId)}
                         marginRight={2}
