@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, FormLabel, Input, Select, Slider, SliderFilledTrack, SliderThumb, SliderTrack } from "@chakra-ui/core";
+import { FormControl, FormLabel, Input, Select, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack } from "@chakra-ui/core";
 
 import { ButtonWithLinkedModal, ModalButtonAction } from "Component";
 
@@ -32,48 +32,51 @@ export const RecordAdder: React.FC = () => {
 const NewRecordForm: React.FC = () => {
     const data = useNewRecordFormData();
     return (
-        <FormControl
-        >
-            <FormLabel htmlFor="personSelection">
-                Person?
-            </FormLabel>
-            <Select
-                id="personSelection"
-                placeholder="select person"
-            >
-                {data.persons.map(person => (
-                    <option key={person.iid} value={person.iid}>{person.firstName}</option>
-                ))}
-            </Select>
-            <FormLabel
-                htmlFor="dateSelection"
-                marginTop={4}
-            >
-                When?
-            </FormLabel>
-            <Input
-                id="dateSelection"
-                type="date"
-                defaultValue={new Date().toISOString().substring(0, 10)}
-                // defaultValue="2020-10-11"
-            />
-            <FormLabel
-                htmlFor="amountSelection"
-                marginTop={4}
-            >
-                Full day?
-            </FormLabel>
-            <Slider
-                id="amountSelection"
-                min={0}
-                max={1}
-                step={0.01}
-                defaultValue={1}
-            >
-                <SliderTrack />
-                <SliderFilledTrack />
-                <SliderThumb />
-            </Slider>
+        <FormControl>
+            <Stack spacing={3}>
+
+                <FormLabel>
+                    Person?
+                    <Select placeholder="select person" borderColor="pink.100" >
+                        {data.persons.map(person => (
+                            <option key={person.iid} value={person.iid}>{person.firstName}</option>
+                        ))}
+                    </Select>
+                </FormLabel>
+
+                <FormLabel>
+                    Project?
+                    <Select placeholder="select project" borderColor="pink.100">
+                        {data.projects.map(project => (
+                            <option key={project.iid} value={project.iid}>{project.name}</option>
+                        ))}
+                    </Select>
+                </FormLabel>
+
+                <FormLabel>
+                    When?
+                    <Input
+                        borderColor="pink.100"
+                        type="date"
+                        defaultValue={new Date().toISOString().substring(0, 10)}
+                    />
+                </FormLabel>
+
+                <FormLabel>
+                    Full day?
+                    <Slider
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        defaultValue={1}
+                    >
+                        <SliderTrack />
+                        <SliderFilledTrack backgroundColor="pink.400" />
+                        <SliderThumb backgroundColor="pink.800" />
+                    </Slider>
+                </FormLabel>
+
+            </Stack>
         </FormControl>
     );
 };
