@@ -1,16 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import { FormControl, FormLabel, Input, Select, Slider, SliderFilledTrack, SliderThumb, SliderTrack, Stack } from "@chakra-ui/core";
 
 import { ButtonWithLinkedModal, ModalButtonAction } from "Component";
+import { Id, Record } from "Model";
 
 import { useNewRecordFormData } from "./useNewRecordFormData";
 
 
+// our dates should not have time in them
+const defaultDate = () => new Date(new Date().toISOString().substring(0, 10));
+
 export const RecordAdder: React.FC = () => {
-    const data = useNewRecordFormData();
+    const { addRecord } = useNewRecordFormData();
+    const [record, setRecord] = useState(new Record(-1, -1, defaultDate(), 1));
+    
     const userAcceptsNewRecord: ModalButtonAction =
         (closeModal) => {
-            console.log(`Record Adding  --  accepted`);
+            addRecord(record);
             closeModal();
         };
 
@@ -24,21 +30,55 @@ export const RecordAdder: React.FC = () => {
             propsForTriggerButton={{ leftIcon: "add" }}
             propsForModal={{ closeOnOverlayClick: false }}
         >
-            <NewRecordForm />
+            <NewRecordForm
+                record={record}
+                updateRecord={setRecord}
+            />
         </ButtonWithLinkedModal>
     );
 };
 
-const NewRecordForm: React.FC = () => {
-    const data = useNewRecordFormData();
+interface ModalProps {
+    record: Record;
+    updateRecord: (record: Record) => void;
+}
+
+const NewRecordForm: React.FC<ModalProps> = ({ record, updateRecord }) => {
+    const { persons, projects } = useNewRecordFormData();
+    
+    const personChange: (e: React.ChangeEvent<HTMLSelectElement>) => void = (e) => {
+        const personId: Id = parseInt(e.currentTarget.value);
+        const newRecord = {...record, personId};
+        updateRecord(newRecord);
+    };
+
+    const projectChange: (e: React.ChangeEvent<HTMLSelectElement>) => void = (e) => {
+        const projectId: Id = parseInt(e.currentTarget.value);
+        updateRecord({...record, projectId});
+    };
+
+    const dateChange: (event: React.ChangeEvent<HTMLInputElement>) => void = (e) => {
+        const date: Date = new Date(e.currentTarget.value);
+        updateRecord({...record, date});
+    };
+
+    const workAmountChange: (amount: number) => void = (workAmount) => {
+        updateRecord({...record, workAmount});
+    };
+
     return (
         <FormControl>
             <Stack spacing={3}>
 
                 <FormLabel>
                     Person?
-                    <Select placeholder="select person" borderColor="pink.100" >
-                        {data.persons.map(person => (
+                    <Select
+                        value={record.personId}
+                        onChange={personChange}
+                        placeholder="select person"
+                        borderColor="pink.100"
+                    >
+                        {persons.map(person => (
                             <option key={person.iid} value={person.iid}>{person.firstName}</option>
                         ))}
                     </Select>
@@ -46,8 +86,13 @@ const NewRecordForm: React.FC = () => {
 
                 <FormLabel>
                     Project?
-                    <Select placeholder="select project" borderColor="pink.100">
-                        {data.projects.map(project => (
+                    <Select
+                        value={record.projectId}
+                        onChange={projectChange}
+                        placeholder="select project"
+                        borderColor="pink.100"
+                    >
+                        {projects.map(project => (
                             <option key={project.iid} value={project.iid}>{project.name}</option>
                         ))}
                     </Select>
@@ -56,19 +101,22 @@ const NewRecordForm: React.FC = () => {
                 <FormLabel>
                     When?
                     <Input
-                        borderColor="pink.100"
+                        value={record.date.toISOString().substring(0, 10)}
+                        onChange={dateChange}
                         type="date"
-                        defaultValue={new Date().toISOString().substring(0, 10)}
+                        borderColor="pink.100"
                     />
                 </FormLabel>
 
                 <FormLabel>
                     Full day?
                     <Slider
+                        value={record.workAmount}
+                        onChange={workAmountChange}
+                        defaultValue={1}
                         min={0}
                         max={1}
                         step={0.01}
-                        defaultValue={1}
                     >
                         <SliderTrack />
                         <SliderFilledTrack backgroundColor="pink.400" />
