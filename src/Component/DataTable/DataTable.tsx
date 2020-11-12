@@ -8,7 +8,7 @@ import { ProjectCell } from "./ProjectCell";
 
 
 export const DataTable: React.FC = () => {
-    const { byProject } = useDataTableData();
+    const { projects, days } = useDataTableData();
 
     // props for both left and right area
     const areaProps: GridProps = {
@@ -42,17 +42,17 @@ export const DataTable: React.FC = () => {
 
             {/*  projects' area  */}
             <Grid {...projectAreaProps}>
-                {byProject.map(item =>
-                    <ProjectCell project={item.project} key={item.project.iid} {...borders} borderRightWidth={2} />
+                {projects.map(project =>
+                    <ProjectCell project={project} key={project.iid} {...borders} borderRightWidth={2} />
                 )}
                 <AddProjectButton />
             </Grid>
 
             {/*  assignments' area  */}
             <Grid {...dataAreaProps}>
-                {byProject.map((row, i) => (
-                    row.days.map((day, j) =>
-                        <DataCell projectId={row.project.iid} day={day} gridRow={i+1} key={`${i}_${j}`} {...borders}/>
+                {projects.map((project, i) => (
+                    days.map((day, j) =>
+                        <DataCell projectId={project.iid} day={day} gridRow={i+1} key={`${i}_${j}`} {...borders}/>
                     )
                 ))}
             </Grid>

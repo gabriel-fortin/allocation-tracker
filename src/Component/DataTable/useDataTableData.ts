@@ -1,12 +1,10 @@
-import { Project, Day, Person, Record, WithId } from "Model";
+import { Project, WithId } from "Model";
 import { AppStore, useAppStore } from "AppStore";
 
 
 interface Result {
-    byProject: {
-        project: WithId<Project>
-        days: Date[]
-    }[]
+    projects: WithId<Project>[];
+    days: Date[];
 }
 
 
@@ -16,19 +14,11 @@ export const useDataTableData: () => Result = () => {
     const unique: (value: any, index: number, self: any[]) => boolean =
         (value, index, self) => self.indexOf(value) === index;
 
+    const days = theAppStore.records
+        .map(x => x.date)
+        .filter(unique);
     return ({
-        byProject: theAppStore.projects
-            .map((project) => {
-                const recordsForProject = theAppStore.records
-                    .filter(r => r.projectId===project.iid);
-                const days = recordsForProject
-                    .map(r => r.date)
-                    .filter(unique);
-                
-                return ({
-                    project,
-                    days,
-                });
-            })
-    })
+        projects: theAppStore.projects,
+        days,
+    });
 };
