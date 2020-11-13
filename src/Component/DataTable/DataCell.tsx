@@ -14,8 +14,6 @@ type DataCellProps =
 
 
 export const DataCell: React.FC<DataCellProps> = ({ projectId, day, ...boxProps }) => {
-    // data will contain a list of people with values between 0 and 1
-
     const appStore = useAppStore();
     const personsIds = appStore.persons.map(p => p.iid);
 
@@ -27,10 +25,11 @@ export const DataCell: React.FC<DataCellProps> = ({ projectId, day, ...boxProps 
                 r.personId === personId
             );
 
-        if (matchingRecords.length !== 1)
-            throw new Error(`expected single matching record`);
+        if (matchingRecords.length > 1)
+            throw new Error(`expected at most one matching record; found ${matchingRecords.length}`
+                + ` (project id: '${projectId}'; person id: '${personId}'; day: '${day}')`);
 
-        return matchingRecords[0];
+        return matchingRecords[0]; // undefined, if no record found
     };
 
     const personFor = (personId: Id) => {
@@ -38,15 +37,11 @@ export const DataCell: React.FC<DataCellProps> = ({ projectId, day, ...boxProps 
             .filter(p => p.iid === personId);
 
         if (matchingPersons.length !== 1)
-            throw new Error(`expected single matching person`);
+            throw new Error(`expected single matching person; found ${matchingPersons.length}`
+                + ` (person id: '${personId}')`);
 
         return matchingPersons[0];
     };
-
-    const bgColorFor: (i: number) => string = (i) => [
-        "teal.600", "yellow.400", "blue.300", "red.700", "purple.300",
-        "pink.700", "gray.600"
-    ][i];
 
     return (
         <Stack {...boxProps}
@@ -71,31 +66,23 @@ export const DataCell: React.FC<DataCellProps> = ({ projectId, day, ...boxProps 
 };
 
 interface SubCellForRecord {
-    record: Record
+    record?: Record
     person: Person
 }
 
 const SubCellForRecord: React.FC<SubCellForRecord> = ({ record, person }) => {
-    const border = (record.workAmount > 0)
-        && `solid 3px ${person.color}`
-        || `0`;
 
     return (
         <Box
             width="1.1em"
             height="1.65em"
             textAlign="center"
-            // a 'Box' overrides right margin to 0.5rem
-            // so we compensate with other margins/paddings
-            marginLeft={-2}
-            // borderTop={border}
-            // borderBottom={border}
 
             borderTop="solid 3px"
             borderBottom="solid 3px"
-            borderColor={record.workAmount>0 && person.color || "lightgray"}
+            borderColor={record && record.workAmount>0 && person.color || "lightgray"}
             borderRadius="20%"
-            opacity={record.workAmount*0.9 + 0.1}
+            opacity={record && record.workAmount*0.9 + 0.1 || 0.1}
         >
             <Text>
                 {person.initial}
